@@ -1,0 +1,96 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<script src="http://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+<script type="text/javascript">
+    window.onload = function () {
+	    var chart = new CanvasJS.Chart("chartContainer",
+	    {
+		    zoomEnabled: true,
+		    panEnabled: true,
+		    animationEnabled: true,
+		    theme: "theme2",
+		    title:{
+		        text: title
+		    },
+		    legend: {
+			    horizontalAlign: "right",
+			    verticalAlign: "center"
+		    },
+		    axisY:{
+			    includeZero: false
+		    },
+		    axisX: {
+		        valueFormatString: "DDD MMM hh:mm",
+		        interval:2,
+		        intervalType: "hour",
+		        includeZero: false
+		    },
+		    data: data,
+        });
+	    chart.render();
+    }
+
+    var title = "";
+    
+    var title = "@ViewBag.Hashtag";
+	var data = [];
+	var dataSeries = { type: "line" };
+	var tweetList = @Html.Raw(ViewBag.DataPoints);
+
+    var dataPoints = [];
+    if (tweetList != null){
+        for (var i = 0; i < tweetList.length; i++)
+        {
+            dataPoints.push({
+                x: new Date(tweetList[i].x),
+                y: tweetList[i].y
+            });
+        }
+
+        dataSeries.dataPoints = dataPoints;
+
+        data.push(dataSeries);
+    }
+    
+
+</script>
+
+<div class="jumbotron">
+    <h1>Twitter Hashtag</h1>
+    <p class="lead">Display Twitter Hashtag Timeline.</p>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <h2>Hashtag</h2>
+        @model Search
+
+        <div class="col-xs-12 col-sm-12">
+        @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { @class = "form-horizontal" }))
+        {
+            <div class="form-group">
+                <div class="col-xs-3 text-right">
+                    <label for="cpTitle">Hashtag</label>
+                </div>
+                <div class="col-xs-9">
+                    @Html.TextBoxFor(model => model.Hashtag, new { @class = "form-control" })                   
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-xs-3 text-right">
+                    
+                </div>
+                <div class="col-xs-9">
+                    <button type="submit" class="btn btn-primary btn-space">Search</button>
+                </div>
+            </div>
+        }
+            
+        </div>   
+    </div>
+</div>
+
+<div id="chartContainer" style="height: 300px; width: 100%;">
+</div>
